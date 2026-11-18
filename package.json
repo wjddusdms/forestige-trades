@@ -1,0 +1,16 @@
+{
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "lint": "eslint site tests/model.test.mjs && python -m compileall -q scripts tests",
+    "typecheck": "tsc --project tsconfig.json",
+    "build": "python scripts/build.py",
+    "test": "node --test tests/model.test.mjs && python -m unittest discover -s tests"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "eslint": "10.15.0",
+    "globals": "17.14.0",
+    "typescript": "5.9.3"
+  }
+}

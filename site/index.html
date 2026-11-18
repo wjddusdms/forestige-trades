@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="부산 래미안 포레스티지 1·2·3단지 매매, 전세, 월세 실거래가">
+  <meta name="theme-color" content="#153a31">
+  <title>래미안 포레스티지 실거래가</title>
+  <link rel="stylesheet" href="./style.css">
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap hero-inner">
+      <p class="eyebrow">부산 동래구 · 금정구</p>
+      <h1>래미안 포레스티지 실거래가</h1>
+      <p>1·2·3단지 비공식 입주민 정보 페이지</p>
+    </div>
+  </header>
+  <main class="wrap">
+    <nav class="tabs" aria-label="거래 종류">
+      <button type="button" data-kind="sale" aria-pressed="true">매매</button>
+      <button type="button" data-kind="lease" aria-pressed="false">전세</button>
+      <button type="button" data-kind="rent" aria-pressed="false">월세</button>
+    </nav>
+    <section class="panel filters" aria-label="거래 필터">
+      <label>단지<select id="complex"><option value="">전체</option><option value="1">1단지</option><option value="2">2단지</option><option value="3">3단지</option></select></label>
+      <label>전용면적<select id="area"><option value="">전체</option></select></label>
+      <label>계약 기간<select id="period"><option value="">전체</option><option value="3">최근 3개월</option><option value="6">최근 6개월</option><option value="12">최근 1년</option><option value="custom">직접 선택</option></select></label>
+      <div id="dates" class="dates" hidden>
+        <label>시작일<input id="from" type="date"></label>
+        <label>종료일<input id="to" type="date"></label>
+      </div>
+    </section>
+    <p id="notice" class="notice" role="status">공개 데이터를 확인하는 중입니다.</p>
+    <section class="summary" aria-label="최근 거래 요약" aria-live="polite">
+      <article class="panel"><h2>최근 거래가</h2><div id="latest" class="latest">—</div></article>
+      <article class="panel"><h2>유효 거래</h2><div id="count" class="amount">—</div><p id="cancelled" class="muted"></p></article>
+    </section>
+    <section class="panel chart-panel" aria-labelledby="chart-title">
+      <div class="section-head"><h2 id="chart-title">거래금액 변화</h2><div class="chart-filters">
+        <label>그래프 단지<select id="chart-complex"></select></label>
+        <label>그래프 전용면적<select id="chart-area"></select></label>
+      </div></div>
+      <div id="chart"></div>
+      <p id="point" class="muted point" role="status"></p>
+    </section>
+    <section class="panel ledger" aria-labelledby="ledger-title">
+      <h2 id="ledger-title">실거래 내역</h2>
+      <p id="list-empty" class="muted"></p>
+      <div class="table-scroll" id="table-wrap" tabindex="0" aria-label="최신순 거래 표">
+        <table><thead id="head"></thead><tbody id="body"></tbody></table>
+      </div>
+      <button id="more" type="button" hidden>거래 더 보기</button>
+    </section>
+    <details id="review" class="panel review" hidden>
+      <summary>단지 식별 검증 대상 <strong id="review-count"></strong></summary>
+      <p class="muted">주소와 API 아파트명 조합을 확인 중인 신고 건입니다. 공개 거래 내역과 가격 통계에서는 제외했습니다.</p>
+    </details>
+    <footer>
+      <p id="updated"></p>
+      <p>데이터 출처 <a href="https://rt.molit.go.kr/">국토교통부 실거래가 공개시스템</a></p>
+      <p>실거래가는 계약일 기준이며 신고 지연·정정·해제로 변경될 수 있습니다.</p>
+    </footer>
+  </main>
+</body>
+</html>
