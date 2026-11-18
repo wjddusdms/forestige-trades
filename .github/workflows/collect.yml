@@ -1,0 +1,70 @@
+name: 국토교통부 실거래가 수집
+on:
+  schedule:
+    - cron: '0 22 * * *'
+  workflow_dispatch:
+    inputs:
+      full:
+        description: 전체 계약월 재조회
+        type: boolean
+        default: true
+concurrency:
+  group: forestige-collection
+  cancel-in-progress: false
+jobs:
+  collect:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    outputs:
+      outcome: ${{ steps.fetch.outcome }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - id: fetch
+        continue-on-error: true
+        env:
+          MOLIT_API_KEY: ${{ secrets.MOLIT_API_KEY }}
+          FORCE_FULL: ${{ inputs.full }}
+        run: |
+          if [ "$FORCE_FULL" = true ]; then
+            python scripts/collect.py --full
+          else
+            python scripts/collect.py
+          fi
+      - run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- site/data/snapshot.json site/data/status.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'Refresh MOLIT snapshot status'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+      - if: steps.fetch.outcome == 'success'
+        uses: actions/upload-artifact@v4
+        continue-on-error: true
+        with:
+          name: mapping-review
+          path: review.json
+          retention-days: 7
+  publish:
+    needs: collect
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    uses: ./.github/workflows/pages.yml
+  report-failure:
+    needs: [collect, publish]
+    if: always() && needs.collect.outputs.outcome == 'failure'
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - run: exit 1
